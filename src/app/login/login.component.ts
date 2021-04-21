@@ -4,6 +4,7 @@ import { Admin } from 'src/interfaces/modele-interface';
 import { AdminService } from 'src/providers/admin.service';
 import { LocalStorageService } from 'src/providers/localstorage.service';
 import { ToolsService } from 'src/providers/tools.service';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-login',
@@ -30,22 +31,33 @@ export class LoginComponent implements OnInit {
 
   login(){
     const onSucces= (response : any) =>{
-      console.log(response);
       if(response["status"]=="succes"){
         this.storage.setToken(response["data"]);
         this.router.navigateByUrl("/home");
       }else{
         this.message=response["status"];
       }
+      this.CloseModal();
     }
     const onError= (response :any) =>{
         this.message="Server not Found";
+        this.CloseModal();
     }
     try {
+      this.OpenModal();
       this.adminService.setHttpLogin(this.admin).subscribe(onSucces,onError);
     } catch (error) {
       this.message=error;
     }
   }
 
+  OpenModal()
+  {
+    $("#myModal").css("display", "block");
+  }
+
+  CloseModal()
+  {
+    $("#myModal").css("display", "none");
+  }
 }
